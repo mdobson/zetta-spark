@@ -45,16 +45,3 @@ WrappedServer.prototype.start = function() {
   server.start();
   this.search();
 }
-
-var deviceServer = new WrappedServer();
-
-deviceServer.on('device', function(device){
-  console.log('device online in user space');
-  device.onApiMessage('matt', { cmd:'Ping'});
-  device.on('matt', function(sender, args) {
-    console.log('Matt event');
-  });
-});
-
-deviceServer.start();
-
