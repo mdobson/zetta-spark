@@ -1,5 +1,3 @@
-
-
 var DeviceServer = require('spark-protocol').DeviceServer;
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');

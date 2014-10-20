@@ -1,0 +1,27 @@
+{
+  "name": "node-spark-server",
+  "version": "0.1.0",
+  "description": "Access your spark core with this wrapped server, and device client",
+  "main": "index.js",
+  "dependencies": {
+    "spark-protocol": "~0.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mdobson/zetta-spark.git"
+  },
+  "keywords": [
+    "zetta",
+    "spark"
+  ],
+  "author": "Matthew Dobson <@mdobs>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mdobson/zetta-spark/issues"
+  },
+  "homepage": "https://github.com/mdobson/zetta-spark"
+}
