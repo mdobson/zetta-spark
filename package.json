@@ -1,12 +1,12 @@
 {
-  "name": "node-spark-server",
+  "name": "zetta-spark-driver",
   "version": "0.1.0",
   "description": "Access your spark core with this wrapped server, and device client",
   "main": "index.js",
   "dependencies": {
-    "spark-protocol": "~0.1.5",
     "zetta-scout": "^0.3.0",
-    "zetta-device": "^0.7.0"
+    "zetta-device": "^0.7.0",
+    "spark-protocol-server": "^0.1.0"
   },
   "devDependencies": {},
   "scripts": {
