@@ -3,3 +3,5 @@ node_modules
 *.pem
 *.der
 55ff6e065075555316241887
+.peers/
+.registry/

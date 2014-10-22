@@ -1,45 +1,34 @@
-var DeviceServer = require('spark-protocol').DeviceServer;
-var EventEmitter = require('events').EventEmitter;
+var Scout = require('zetta-scout');
 var util = require('util');
+var ProtocolServer = require('spark-protocol-server');
+var Spark = require('./spark_driver');
 
-var WrappedServer = module.exports = function(opts) {
-  EventEmitter.call(this);
-  opts = opts || {};
-  var keys = opts.coreKeysDir || '.';
-  this.server = new DeviceServer({
-    coreKeysDir:keys
-  });
-  
-  //No idea why they set a global. 
-  global.server = this.server;
-  this.discoveredCores = [];
+var SparkScout = module.exports = function() {
+  Scout.call(this);
+  this.protocolServer = new ProtocolServer();
 };
-util.inherits(WrappedServer, EventEmitter);
+util.inherits(SparkScout, Scout);
 
-WrappedServer.prototype.search = function() {
+SparkScout.prototype.init = function(next) {
   var self = this;
-  this._interval = setInterval(function(){
-    var cores = global.server.getAllCores();
-    var myCoreIds = Object.keys(cores);
-    if(myCoreIds.length) {
-      myCoreIds.forEach(function(coreId) {
-        if(self.discoveredCores.indexOf(coreId) === -1) {
-          var myCore = cores[coreId];
-          self.emit('device', myCore);
-          self.discoveredCores.push(coreId);
-        }
-      });
-    }
-  }, 3000);
-};
+  this.protocolServer.on('device', function(core) {
+    var hexId = core.coreID;
+    var coreQuery = self.server.where({ type: 'spark', coreId: hexId });
+    self.server.find(coreQuery, function(err, results) {
+      //Core ids are unique. We're making a big assumption here, but that's okay.
+      var result = results[0];
+      if(err) {
+        console.log(err);
+      }
 
-WrappedServer.prototype.stopSearch = function() {
-  if(this._interval) {
-    clearInterval(this._interval);
-  }
-};
+      if(result) {
+        self.provision(result, Spark, core);
+      } else {
+        self.discover(Spark, core);
+      }
+    });
 
-WrappedServer.prototype.start = function() {
-  server.start();
-  this.search();
-}
+  });
+  this.protocolServer.start();
+  next();
+};
