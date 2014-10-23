@@ -15,11 +15,12 @@ Spark.prototype.init = function(config) {
     .type('spark')
     .name(this._spark.coreID)
     .state('online')
-    .when('online', { allow: ['ping', 'digitalWrite', 'digitalRead', 'analogRead', 'analogWrite'] })
+    .when('online', { allow: ['ping', 'digitalWrite', 'digitalRead', 'analogRead', 'analogWrite', 'describe'] })
     .map('digitalWrite', this.digitalWrite, [{name: 'pin', type: 'text'}, {name:'state', type:'text'}])
     .map('digitalRead', this.digitalRead, [{name: 'pin', type: 'text'}])
     .map('analogRead', this.analogRead, [{name: 'pin', type: 'text'}])
     .map('analogWrite', this.analogWrite, [{name: 'pin', type: 'text'}, {name: 'value', type:'text'}])
+    .map('describe', this.describe)
     .map('ping', this.ping);
 };
 
@@ -48,6 +49,22 @@ Spark.prototype.ping = function(cb) {
   var self = this;
   this.state = 'pinging';
   this._sendMessage('Ping', null, null, function(err) {
+    self.state = 'online';
+    if(cb) {
+      if(err) {
+        cb(err);
+      } else {
+        cb();
+      }
+    }
+  });
+};
+
+Spark.prototype.describe = function(cb) {
+  var self = this;
+  this.state = 'describing';
+  this._sendMessage('Describe', null, null, function(err, event, results) {
+    self.functions = results.state.f;
     self.state = 'online';
     if(cb) {
       if(err) {
