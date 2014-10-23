@@ -1,7 +1,7 @@
 {
-  "name": "zetta-spark-driver",
+  "name": "zetta-spark-tinker-driver",
   "version": "0.1.0",
-  "description": "Access your spark core with this wrapped server, and device client",
+  "description": "Access your spark core with this wrapped server, and device client. It uses the tinker firmware.",
   "main": "index.js",
   "dependencies": {
     "zetta-scout": "^0.3.0",
