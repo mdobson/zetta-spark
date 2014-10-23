@@ -15,31 +15,37 @@ Spark.prototype.init = function(config) {
     .type('spark')
     .name(this._spark.coreID)
     .state('online')
-    .when('online', { allow: ['ping'] })
+    .when('online', { allow: ['ping', 'digitalWrite', 'digitalRead'] })
+    .map('digitalWrite', this.digitalWrite, [{name: 'pin', type: 'text'}, {name:'state', type:'text'}])
+    .map('digitalRead', this.digitalRead, [{name: 'pin', type: 'text'}])
     .map('ping', this.ping);
 };
 
-Spark.prototype._sendMessage = function(message, cb) {
+Spark.prototype._sendMessage = function(message, name, args, cb) {
   var self = this;
-  if(this._listener) {
-    cb(new Error('Error communicating with Core. We are in a bad state.'));
-  }
 
-  this._listener = this._spark.once(this._listenerKey + message, function() {
-//    self._spark.removeEventListener(self._listenerKey, self._listener);
-    this._listener = null;
+  this._spark.once(this._listenerKey + message, function() {
     var args = Array.prototype.slice.call(arguments);
     args.unshift(null);
     cb.apply(null, args);
   });
-  
-  this._spark.onApiMessage(this._listenerKey + message, { cmd: message });
+  var command = { cmd: message };
+  if(args) {
+    command.args = args;
+  }
+
+  if(args) {
+    command.name = name;
+  }
+
+  console.log(command);
+  this._spark.onApiMessage(this._listenerKey + message, command);
 }
 
 Spark.prototype.ping = function(cb) {
   var self = this;
   this.state = 'pinging';
-  this._sendMessage('Ping', function(err) {
+  this._sendMessage('Ping', null, null, function(err) {
     self.state = 'online';
     if(cb) {
       if(err) {
@@ -47,6 +53,36 @@ Spark.prototype.ping = function(cb) {
       } else {
         cb();
       }
+    }
+  });
+};
+
+Spark.prototype.digitalWrite = function(pin, state, cb) {
+  var self = this;
+  var args = [[pin, state].join(',')];
+  this.state = 'setting-pin';
+  this._sendMessage('CallFn', 'digitalwrite', args, function(err, event, result) {
+    console.log(err);
+    self.state = 'online';
+    if(result.result) {
+      self[pin] = state;
+    }
+    if(cb) {
+      cb();
+    }
+  });
+};
+
+Spark.prototype.digitalRead = function(cb) {
+  var self = this;
+  var pin = 'D7';
+  var args = [pin];
+  this.state = 'reading-pin';
+  this._sendMessage('CallFn', 'digitalread', args, function(err, event, result) {
+    self.state = 'online';
+    self[pin] = result.result;
+    if(cb) {
+      cb();
     }
   });
 };
