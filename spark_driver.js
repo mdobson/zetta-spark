@@ -41,7 +41,6 @@ Spark.prototype._sendMessage = function(message, name, args, cb) {
     command.name = name;
   }
 
-  console.log(command);
   this._spark.onApiMessage(this._listenerKey + message, command);
 }
 
