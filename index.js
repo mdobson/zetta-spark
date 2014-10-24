@@ -31,6 +31,7 @@ SparkScout.prototype.init = function(next) {
       } else {
         self.discover(Spark, core);
       }
+      self._allocatePins(core);
     });
 
   });
@@ -42,7 +43,7 @@ SparkScout.prototype._allocatePins = function(core) {
   var self = this;
   var hexId = core.coreID;
   digitalPins.forEach(function(pin) {
-    var pinQuery = self.server.where({ type: 'spark-digital-pin', pin: pin, coreId: hexId });
+    var pinQuery = self.server.where({ type: 'core-digital-pin', pin: pin, coreId: hexId });
     self.server.find(pinQuery, function(err, results) {
       var result = results[0];
       if(result) {
@@ -54,7 +55,7 @@ SparkScout.prototype._allocatePins = function(core) {
   });
 
   analogPins.forEach(function(pin) {
-    var pinQuery = self.server.where({ type: 'spark-analog-pin', pin: pin, coreId: hexId });
+    var pinQuery = self.server.where({ type: 'core-analog-pin', pin: pin, coreId: hexId });
     self.server.find(pinQuery, function(err, results) {
       var result = results[0];
       if(result) {

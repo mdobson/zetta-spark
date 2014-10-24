@@ -38,8 +38,9 @@ Spark.prototype.ping = function(cb) {
 Spark.prototype.describe = function(cb) {
   var self = this;
   this.state = 'describing';
-  this._core.describe(function(err, event, results) {
-    self.functions = results.state.f;
+  this._core.describe(function(err, results) {
+    self.functions = results.functions;
+    self.variables = results.variables;
     self.state = 'online';
     if(cb) {
       if(err) {
