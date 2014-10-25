@@ -1,6 +1,6 @@
 var Device = require('zetta-device');
 var util = require('util');
-var SparkWrapper = require('./lib/spark');
+var SparkWrapper = require('spark-coap-js-client').Spark;
 
 var Spark = module.exports = function(spark) {
   Device.call(this);
@@ -12,7 +12,7 @@ util.inherits(Spark, Device);
 
 Spark.prototype.init = function(config) {
   config
-    .type('spark')
+    .type('spark-tinker')
     .name('core-' + this._spark.coreID)
     .state('online')
     .when('online', { allow: ['ping', 'describe'] })

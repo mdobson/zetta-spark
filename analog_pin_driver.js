@@ -1,6 +1,6 @@
 var Device = require('zetta-device');
 var util = require('util');
-var AnalogTinkerPin = require('./lib/analog_tinker_pin');
+var AnalogTinkerPin = require('spark-coap-js-client').AnalogPin;
 
 var AnalogPin = module.exports = function(pin, core) {
   Device.call(this);

@@ -18,7 +18,7 @@ SparkScout.prototype.init = function(next) {
   var self = this;
   this.protocolServer.on('device', function(core) {
     var hexId = core.coreID;
-    var coreQuery = self.server.where({ type: 'spark', coreId: hexId });
+    var coreQuery = self.server.where({ type: 'spark-tinker', coreId: hexId });
     self.server.find(coreQuery, function(err, results) {
       //Core ids are unique. We're making a big assumption here, but that's okay.
       var result = results[0];
